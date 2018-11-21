@@ -7,8 +7,8 @@ int dmax = 100; //ajustável
 
 //Define pinos dos sensores. Trigger é comum a ambos
 const int pingTrigger = 32; //32 - pino 3.7
-const int Sensor_1 = 40; //31 - pino 8.2 
-const int Sensor_2 = 31; //40 - p2.5
+const int Sensor_1 = 31; //31 - pino 8.2 
+const int Sensor_2 = 40; //40 - p2.5
 
 char Dist;
   
