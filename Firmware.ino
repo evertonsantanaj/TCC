@@ -3,7 +3,7 @@
 #define RxBt 34 //pino 4.3 recebe RX do BT=>34
 SoftwareSerial Bluetooth(TxBt,RxBt);
 
-int dmax = 100; //ajustável
+int dmax = 130; //ajustável
 
 //Define pinos dos sensores. Trigger é comum a ambos
 const int pingTrigger = 32; //32 - pino 3.7
@@ -69,18 +69,22 @@ if(distancia_cm2==0){
   Dist='c';
   //Bluetooth.print("Dist/");
   Bluetooth.print("c/");
-  Bluetooth.println((distancia_cm1+distancia_cm2)/2);
+  Bluetooth.print((distancia_cm1+distancia_cm2)/2);
+  Bluetooth.print("/");
   
 } else if(distancia_cm1<distancia_cm2){
   Dist='d';
   //Bluetooth.print("Dist/");
   Bluetooth.print("d/");
-  Bluetooth.println(distancia_cm1);
+  Bluetooth.print(distancia_cm1);
+  Bluetooth.print("/");
+    
   }else  if( distancia_cm2<distancia_cm1){
-      Dist='e';
+  Dist='e';
  //   Bluetooth.print("Dist/");
   Bluetooth.print("e/");
-  Bluetooth.println(distancia_cm2);
+  Bluetooth.print(distancia_cm2);
+  Bluetooth.print("/");
  }}
  
   delay(500);
