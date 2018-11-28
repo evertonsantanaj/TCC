@@ -1,5 +1,4 @@
-#MSP430 em ambiente Energia!
-
+//MSP430 em ambiente Energia!
 
 #include <SoftwareSerial.h>
 #define TxBt 33 //pino 4.0 do micro recebe TX do BT =>33
@@ -10,14 +9,14 @@ SoftwareSerial Bluetooth(TxBt,RxBt);
 int dmax = 130; //ajustável
 
 //Define pinos dos sensores. Trigger é comum a ambos
-const int pingTrigger = 32; //32 - pino 3.7
+const int Trigger = 32; //32 - pino 3.7
 const int Sensor_1 = 31; //31 - pino 8.2 
 const int Sensor_2 = 40; //40 - p2.5
 
 char Dist;
 
 void setup() {
-  pinMode(pingTrigger, OUTPUT);
+  pinMode(Trigger, OUTPUT);
   pinMode(Sensor_1, INPUT);
   pinMode(Sensor_2, INPUT);
 
@@ -30,11 +29,11 @@ void loop() {
   long duracao, distancia_cm1, distancia_cm2;
 
   // SENSOR 1 
-  digitalWrite(pingTrigger, LOW); //para assegurar borda de subida
+  digitalWrite(Trigger, LOW); //para assegurar borda de subida
   delayMicroseconds(2);
-  digitalWrite(pingTrigger, HIGH);
+  digitalWrite(Trigger, HIGH);
   delayMicroseconds(10);
-  digitalWrite(pingTrigger, LOW);
+  digitalWrite(Trigger, LOW);
 
   duracao = pulseIn(Sensor_1, HIGH);  //tempo do envio do sinal pelo tigger até sua recepcao no echo, caso haja
 
@@ -43,15 +42,15 @@ void loop() {
   delay(100);
 
   // SENSOR 2
-  digitalWrite(pingTrigger, LOW);
+  digitalWrite(Trigger, LOW);
   delayMicroseconds(2);
-  digitalWrite(pingTrigger, HIGH);
+  digitalWrite(Trigger, HIGH);
   delayMicroseconds(10);
-  digitalWrite(pingTrigger, LOW);
+  digitalWrite(Trigger, LOW);
 
   duracao = pulseIn(Sensor_2, HIGH);
 
-  distancia_cm2 = microsecondsToCentimeters(duracao);
+  distancia_cm2 = microsegundosParaCentimetros(duracao);
 
   delay(100);
 
@@ -83,8 +82,10 @@ void loop() {
   delay(500);
 }
 
+//*********************************************************
+
 long microsegundosParaCentimetros(long microsegundos){
-  //velocidade do som no ar: 340m/s = 34000cm/1000000us
-  //o fator 2 no denominador ocorre porqueo o valor recebido corresponde ida e volta
+  /* velocidade do som no ar: 340m/s = 34000cm/1000000us
+     o fator 2 no denominador ocorre porqueo o valor recebido corresponde ida e volta */
   return microsegundos*34000 /(1000000*2);
 }
