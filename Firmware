@@ -1,9 +1,10 @@
-#MSP430 em abiente Energia!
+#MSP430 em ambiente Energia!
 
 
 #include <SoftwareSerial.h>
-#define TxBt 33 //pino 4.0 recebe TX do BT =>33
-#define RxBt 34 //pino 4.3 recebe RX do BT=>34
+#define TxBt 33 //pino 4.0 do micro recebe TX do BT =>33
+#define RxBt 34 //pino 4.3 do micro recebe RX do BT=>34
+
 SoftwareSerial Bluetooth(TxBt,RxBt);
 
 int dmax = 130; //ajustável
@@ -14,21 +15,17 @@ const int Sensor_1 = 31; //31 - pino 8.2
 const int Sensor_2 = 40; //40 - p2.5
 
 char Dist;
-  
+
 void setup() {
-  
-   pinMode(pingTrigger, OUTPUT);
-   pinMode(Sensor_1, INPUT);
-   pinMode(Sensor_2, INPUT);
-   
-  // initialize serial communication:
-  //Serial.begin(9600);
-   Bluetooth.begin(9600);
-   Dist='n';
+  pinMode(pingTrigger, OUTPUT);
+  pinMode(Sensor_1, INPUT);
+  pinMode(Sensor_2, INPUT);
+
+  // Configura a taxa de comunicacao bluetooth em 9600 bps
+  Bluetooth.begin(9600);
 }
 
-void loop()
-{
+void loop() {
   // variaveis para armazenamento de valores
   long duracao, distancia_cm1, distancia_cm2;
 
@@ -41,7 +38,7 @@ void loop()
 
   duracao = pulseIn(Sensor_1, HIGH);  //tempo do envio do sinal pelo tigger até sua recepcao no echo, caso haja
 
-  distancia_cm1 = microsecondsToCentimeters(duracao); //converte duracao em distancia
+  distancia_cm1 = microsegundosParaCentimetros(duracao); //converte duracao em distancia
 
   delay(100);
 
@@ -54,47 +51,40 @@ void loop()
 
   duracao = pulseIn(Sensor_2, HIGH);
 
- distancia_cm2 = microsecondsToCentimeters(duracao);
+  distancia_cm2 = microsecondsToCentimeters(duracao);
 
   delay(100);
-  
- // para evitar falsos positivos de  obstáculos
-if(distancia_cm1==0){
-  distancia_cm1=1000;
-}
 
-if(distancia_cm2==0){
-  distancia_cm2=1000;
-}
+  // para evitar falsos positivos de  obstáculos
+  if(distancia_cm1==0){
+    distancia_cm1=1000;
+  }
 
- if(distancia_cm1<dmax||distancia_cm2<dmax){ // só faz sentido detectar obstáculo mais proximo se houver um
-  if(abs(distancia_cm1-distancia_cm2)<2){
-  Dist='c';
-  //Bluetooth.print("Dist/");
-  Bluetooth.print("c/");
-  Bluetooth.print((distancia_cm1+distancia_cm2)/2);
-  Bluetooth.print("/");
-  
-} else if(distancia_cm1<distancia_cm2){
-  Dist='d';
-  //Bluetooth.print("Dist/");
-  Bluetooth.print("d/");
-  Bluetooth.print(distancia_cm1);
-  Bluetooth.print("/");
-    
-  }else  if( distancia_cm2<distancia_cm1){
-  Dist='e';
- //   Bluetooth.print("Dist/");
-  Bluetooth.print("e/");
-  Bluetooth.print(distancia_cm2);
-  Bluetooth.print("/");
- }}
- 
+  if(distancia_cm2==0){
+    distancia_cm2=1000;
+  }
+
+  if(distancia_cm1<dmax||distancia_cm2<dmax){ // só faz sentido detectar obstáculo mais proximo se houver um
+    if(abs(distancia_cm1-distancia_cm2)<2){
+      Bluetooth.print("c/");
+      Bluetooth.print((distancia_cm1+distancia_cm2)/2);
+      Bluetooth.print("/");
+    } else if(distancia_cm1<distancia_cm2){
+      Bluetooth.print("d/");
+      Bluetooth.print(distancia_cm1);
+      Bluetooth.print("/");
+    } else if( distancia_cm2<distancia_cm1){
+      Bluetooth.print("e/");
+      Bluetooth.print(distancia_cm2);
+      Bluetooth.print("/");
+    }
+  }
+
   delay(500);
 }
 
-long microsecondsToCentimeters(long microseconds){
-//velocidade do som no ar: 340m/s = 34000cm/1000000us
-//o fator 2 no denominador ocorre porqueo o valor recebido corresponde ida e volta
-  return microseconds*34000 /(1000000*2);
+long microsegundosParaCentimetros(long microsegundos){
+  //velocidade do som no ar: 340m/s = 34000cm/1000000us
+  //o fator 2 no denominador ocorre porqueo o valor recebido corresponde ida e volta
+  return microsegundos*34000 /(1000000*2);
 }
